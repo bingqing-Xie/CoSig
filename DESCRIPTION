@@ -1,5 +1,5 @@
 Package: CoSig
-Title: What the Package Does (One Line, Title Case)
+Title: This R package is designed for generating co-expression network for single cell dataset and extracting gene signatures that reflect network variations along features of interest.
 Version: 0.0.0.9000
 Authors@R: 
     person("Bingqing", "Xie", , "bingqingxie0@gmail.com", role = c("aut", "cre"),
