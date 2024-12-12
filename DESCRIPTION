@@ -5,7 +5,7 @@ Authors@R:
     person("Bingqing", "Xie", , "bingqingxie0@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-9246-9321"))
 Description: Construct co-expression network for single cell dataset by sample, and perform unsupervised high-dimension SVD to extract the network variation on sample level. Rank highly variable genes signatures (CoSig) in the network along trajectory for the feature of interest and extract co-expression networks on grouped samples centered around the CorSig genes.
-License: `use_mit_license()`
+License: GPL-3.0 license
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
