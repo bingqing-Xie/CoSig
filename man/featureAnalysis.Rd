@@ -8,6 +8,7 @@ and construct the network}
 featureAnalysis(
   prefix,
   cp_decomp,
+  t_coexp,
   sampleNames,
   varFeatures,
   meta,
@@ -18,21 +19,25 @@ featureAnalysis(
 )
 }
 \arguments{
-\item{cp_decomp:}{decomposed matrices from HOSVD}
+\item{prefix}{working directory prefix}
 
-\item{sampleNames:}{names of the samples}
+\item{cp_decomp}{decomposed matrices from HOSVD}
 
-\item{varFeatures:}{gene names}
+\item{t_coexp}{3D tensor matrix for stacked co-expression networks for all samples}
 
-\item{meta:}{metadata for samples}
+\item{sampleNames}{names of the samples}
 
-\item{featureOfInterest:}{column name of the feature of interest in the metadata: assuming the features are levels or numerical values}
+\item{varFeatures}{gene names}
 
-\item{featureOfCategory:}{column name of the grouping in the metadata: assuming the features are levels}
+\item{meta}{metadata for samples}
 
-\item{cor_method:}{correlation method}
+\item{featureOfInterest}{column name of the feature of interest in the metadata assuming the features are levels or numerical values}
 
-\item{zthres:}{threshold for z-score of loading values to identify significant driving genes per TC}
+\item{featureOfCategory}{column name of the grouping in the metadata: assuming the features are levels}
+
+\item{cor_method}{correlation method}
+
+\item{zthres}{threshold for z-score of loading values to identify significant driving genes per TC}
 }
 \description{
 Extract the tensor component (TC) that correlated with the feature of interest,

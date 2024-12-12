@@ -7,11 +7,13 @@
 selectGenesCo(cp_decomp, selectComp, varFeatures, zthres = 2)
 }
 \arguments{
-\item{cp_decomp:}{decomposed matrices from HOSVD}
+\item{cp_decomp}{decomposed matrices from HOSVD}
 
-\item{varFeatures:}{gene names}
+\item{selectComp}{selected TCs based on the correlation}
 
-\item{zthres:}{threshold for z-score of loading values to identify significant driving genes per TC}
+\item{varFeatures}{gene names}
+
+\item{zthres}{threshold for z-score of loading values to identify significant driving genes per TC}
 }
 \value{
 A list of driving genes

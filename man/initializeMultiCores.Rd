@@ -7,7 +7,7 @@
 initializeMultiCores(cores = 10)
 }
 \arguments{
-\item{cores:}{Number of cores to use, not to overload your computer}
+\item{cores}{Number of cores to use, not to overload your computer}
 }
 \description{
 Setting multi-threading

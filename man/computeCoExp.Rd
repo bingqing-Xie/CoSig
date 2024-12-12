@@ -16,17 +16,17 @@ computeCoExp(
 )
 }
 \arguments{
-\item{prefix:}{folder for raw output (automatic create raw folder)}
+\item{prefix}{folder for raw output (automatic create raw folder)}
 
-\item{sampleid:}{column name in seurat containing sample info}
+\item{sampleid}{column name in seurat containing sample info}
 
-\item{recompute_glasso:}{recompute the graphical lasso co-expression network}
+\item{recompute_glasso}{recompute the graphical lasso co-expression network}
 
-\item{recompute_HOSVD:}{recompute HOSVD for the co-expression network}
+\item{recompute_HOSVD}{recompute HOSVD for the co-expression network}
 
-\item{ReComputeVarGene:}{recompute the variable genes}
+\item{ReComputeVarGene}{recompute the variable genes}
 
-\item{mean_thres:}{minimal threshold for mean expression of variable genes}
+\item{mean_thres}{minimal threshold for mean expression of variable genes}
 
 \item{return}{Decomposed tensor matrices , list of sample names , and list of gene names}
 }

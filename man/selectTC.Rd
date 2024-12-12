@@ -14,19 +14,17 @@ selectTC(
 )
 }
 \arguments{
-\item{cp_decomp:}{decomposed matrices from HOSVD}
+\item{meta}{metadata for samples}
 
-\item{nsamples:}{number of samples}
+\item{featureOfInterest}{column name of the feature of interest in the metadata: assuming the features are levels or numerical values}
 
-\item{varFeatures:}{gene names}
+\item{nsamples}{number of samples}
 
-\item{meta:}{metadata for samples}
+\item{cp_decomp}{decomposed matrices from HOSVD}
 
-\item{featureOfInterest:}{column name of the feature of interest in the metadata: assuming the features are levels or numerical values}
+\item{varFeatures}{gene names}
 
-\item{cor_method:}{correlation method}
-
-\item{zthres:}{threshold for z-score of loading values to identify significant driving genes per TC}
+\item{cor_method}{correlation method}
 }
 \value{
 A list of selected TCs

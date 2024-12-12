@@ -5,28 +5,27 @@
 \title{Permutation on samples to extract the genes}
 \usage{
 permTest(
+  t_coexp,
   meta,
+  varFeatures,
   featureOfInterest,
   featureOfCategory,
-  t_coexp,
   prefix,
   nsamples_per_group = 5
 )
 }
 \arguments{
-\item{cp_decomp:}{decomposed matrices from HOSVD}
+\item{meta}{metadata for samples}
 
-\item{nsamples:}{number of samples}
+\item{varFeatures}{gene names}
 
-\item{varFeatures:}{gene names}
+\item{featureOfInterest}{column name of the feature of interest in the metadata assuming the features are levels or numerical values}
 
-\item{meta:}{metadata for samples}
+\item{nsamples}{number of samples}
 
-\item{featureOfInterest:}{column name of the feature of interest in the metadata: assuming the features are levels or numerical values}
+\item{cor_method}{correlation method}
 
-\item{cor_method:}{correlation method}
-
-\item{zthres:}{threshold for z-score of loading values to identify significant driving genes per TC}
+\item{zthres}{threshold for z-score of loading values to identify significant driving genes per TC}
 }
 \description{
 Permutation on samples to extract the genes

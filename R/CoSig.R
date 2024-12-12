@@ -1,5 +1,5 @@
 #' Setting multi-threading
-#' @param cores: Number of cores to use, not to overload your computer
+#' @param cores Number of cores to use, not to overload your computer
 initializeMultiCores = function(cores=10){
 	cl <- makeCluster(cores) 
 	registerDoParallel(cl)
@@ -7,12 +7,12 @@ initializeMultiCores = function(cores=10){
 
 #' Compute co-expression networks given seurat object for each sample and
 #' Perform unsupervised HOSVD on the combined 3D tensor co-expression network
-#' @param prefix: folder for raw output (automatic create raw folder)
-#' @param sampleid: column name in seurat containing sample info
-#' @param recompute_glasso: recompute the graphical lasso co-expression network
-#' @param recompute_HOSVD: recompute HOSVD for the co-expression network
-#' @param ReComputeVarGene: recompute the variable genes
-#' @param mean_thres: minimal threshold for mean expression of variable genes
+#' @param prefix folder for raw output (automatic create raw folder)
+#' @param sampleid column name in seurat containing sample info
+#' @param recompute_glasso recompute the graphical lasso co-expression network
+#' @param recompute_HOSVD recompute HOSVD for the co-expression network
+#' @param ReComputeVarGene recompute the variable genes
+#' @param mean_thres minimal threshold for mean expression of variable genes
 #' @param return Decomposed tensor matrices , list of sample names , and list of gene names
 #' @export
 computeCoExp  =  function(obj, prefix = ".", sampleid = "Sample_ID",recompute_glasso = TRUE, recompute_HOSVD = TRUE, ReComputeVarGene = FALSE, mean_thres = 0.1){
@@ -60,7 +60,6 @@ computeCoExp  =  function(obj, prefix = ".", sampleid = "Sample_ID",recompute_gl
 		nFeatures = length(varFeatures)
 		nsamples = length(sampleNames)
 		t_coexp = readRDS(file = paste0(prefix,"coexp_networks_tensor.rds"))
-		
 	}
 	
 	if(recompute_HOSVD){
@@ -70,21 +69,28 @@ computeCoExp  =  function(obj, prefix = ".", sampleid = "Sample_ID",recompute_gl
 	}else{
 		cp_decomp = readRDS(file = paste0(prefix,"HOSVD_cp_decomp.rds"))
 	}
-	return(cp_decomp,sampleNames,varFeatures)
+	return(list(cp_decomp,t_coexp,sampleNames,varFeatures))
 }
 
 #' Extract the tensor component (TC) that correlated with the feature of interest,
 #' and construct the network
-#' @param cp_decomp: decomposed matrices from HOSVD
-#' @param sampleNames: names of the samples
-#' @param varFeatures: gene names
-#' @param meta: metadata for samples
-#' @param featureOfInterest: column name of the feature of interest in the metadata: assuming the features are levels or numerical values
-#' @param featureOfCategory: column name of the grouping in the metadata: assuming the features are levels
-#' @param cor_method: correlation method
-#' @param zthres: threshold for z-score of loading values to identify significant driving genes per TC
+#' @param prefix working directory prefix
+#' @param cp_decomp decomposed matrices from HOSVD
+#' @param t_coexp 3D tensor matrix for stacked co-expression networks for all samples
+#' @param sampleNames names of the samples
+#' @param varFeatures gene names
+#' @param meta metadata for samples
+#' @param featureOfInterest column name of the feature of interest in the metadata assuming the features are levels or numerical values
+#' @param featureOfCategory column name of the grouping in the metadata: assuming the features are levels
+#' @param cor_method correlation method
+#' @param zthres threshold for z-score of loading values to identify significant driving genes per TC
 #' @export
-featureAnalysis =  function(prefix, cp_decomp,sampleNames,varFeatures, meta, featureOfInterest, featureOfCategory, cor_method  =  "spearman", zthres = 2){
+featureAnalysis =  function(prefix, cp_decomp,t_coexp,sampleNames,varFeatures, meta, featureOfInterest, featureOfCategory, cor_method  =  "spearman", zthres = 2){
+	if(!dir.exists(file.path(prefix))){
+		prefix = "."
+	}
+	dir.create(file.path(prefix, "result"), showWarnings  =  FALSE)
+	prefix = paste0(prefix,"/result/")
 	### Extract the sample x TC matrix and concatenate it with the metadata
 	df2 = data.frame(cp_decomp$U[[3]])
 	colnames(df2) = paste0("Comp",1:ncol(df2))
@@ -210,9 +216,10 @@ featureAnalysis =  function(prefix, cp_decomp,sampleNames,varFeatures, meta, fea
 }
 
 #' Extract the genes with highest loadings to TCs
-#' @param cp_decomp: decomposed matrices from HOSVD
-#' @param varFeatures: gene names
-#' @param zthres: threshold for z-score of loading values to identify significant driving genes per TC
+#' @param cp_decomp decomposed matrices from HOSVD
+#' @param selectComp selected TCs based on the correlation
+#' @param varFeatures gene names
+#' @param zthres threshold for z-score of loading values to identify significant driving genes per TC
 #' @return A list of driving genes
 selectGenesCo=function(cp_decomp,selectComp,varFeatures,zthres=2){
 	df_loading=data.frame(cp_decomp$U[[1]])
@@ -235,13 +242,12 @@ selectGenesCo=function(cp_decomp,selectComp,varFeatures,zthres=2){
 
 
 #' Extract the tensor component (TC) that correlated with the feature of interest
-#' @param cp_decomp: decomposed matrices from HOSVD
-#' @param nsamples: number of samples
-#' @param varFeatures: gene names
-#' @param meta: metadata for samples
-#' @param featureOfInterest: column name of the feature of interest in the metadata: assuming the features are levels or numerical values
-#' @param cor_method: correlation method
-#' @param zthres: threshold for z-score of loading values to identify significant driving genes per TC
+#' @param cp_decomp decomposed matrices from HOSVD
+#' @param nsamples number of samples
+#' @param varFeatures gene names
+#' @param meta metadata for samples
+#' @param featureOfInterest column name of the feature of interest in the metadata: assuming the features are levels or numerical values
+#' @param cor_method correlation method
 #' @return A list of selected TCs
 selectTC=function(meta,featureOfInterest,nsamples,cp_decomp,varFeatures,cor_method="spearman"){
 	plotdata=scale(meta[,1:nsamples])
@@ -262,15 +268,19 @@ selectTC=function(meta,featureOfInterest,nsamples,cp_decomp,varFeatures,cor_meth
 
 
 #' Permutation on samples to extract the genes
-#' @param cp_decomp: decomposed matrices from HOSVD
-#' @param nsamples: number of samples
-#' @param varFeatures: gene names
-#' @param meta: metadata for samples
-#' @param featureOfInterest: column name of the feature of interest in the metadata: assuming the features are levels or numerical values
-#' @param cor_method: correlation method
-#' @param zthres: threshold for z-score of loading values to identify significant driving genes per TC
+#' @param nsamples number of samples
+#' @param varFeatures gene names
+#' @param meta metadata for samples
+#' @param featureOfInterest column name of the feature of interest in the metadata assuming the features are levels or numerical values
+#' @param cor_method correlation method
+#' @param zthres threshold for z-score of loading values to identify significant driving genes per TC
 #' @export
-permTest = function(meta, featureOfInterest, featureOfCategory, t_coexp, prefix, nsamples_per_group = 5){
+permTest = function(t_coexp, meta,varFeatures,  featureOfInterest, featureOfCategory, prefix, nsamples_per_group = 5){
+	if(!dir.exists(file.path(prefix))){
+		prefix = "."
+	}
+	dir.create(file.path(prefix, "perm"), showWarnings  =  FALSE)
+	prefix = paste0(prefix,"/perm/")
 	conditions = levels(featureOfCategory)
 	sig_Genes=foreach(j=1:100,.combine=rbind)%dopar% {
 		sample_sub=c()
